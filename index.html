@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dilum Salon - ඔබේ රූපලාවන්‍ය සිහින මෙහි සැබෑ වේ!</title>
+    <!-- TailwindCSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Framer Motion -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/framer-motion/10.16.4/framer-motion.min.js"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Heroicons -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/heroicons/2.0.18/heroicons.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            scroll-behavior: smooth;
+        }
+        
+        .page {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        
+        .page.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #ff9a00 0%, #ff5252 100%);
+        }
+        
+        .service-card {
+            transition: all 0.3s ease;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .navbar-link {
+            position: relative;
+        }
+        
+        .navbar-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: #fff;
+            transition: width 0.3s;
+        }
+        
+        .navbar-link:hover::after,
+        .navbar-link.active::after {
+            width: 100%;
+        }
+        
+        .testimonial-card {
+            transition: all 0.3s ease;
+        }
+        
+        .testimonial-card:hover {
+            transform: scale(1.03);
+        }
+        
+        /* Custom animations */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-fadeUp {
+            animation: fadeUp 0.7s ease forwards;
+        }
+        
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        
+        /* Floating animations for decorative elements */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .floating-element {
+            animation: float 4s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu" class="fixed inset-0 bg-black bg-opacity-90 z-50 flex flex-col justify-center items-center hidden">
+        <button id="close-menu" class="absolute top-6 right-6 text-white">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+        <div class="flex flex-col space-y-6 text-center">
+            <a href="#" data-page="home" class="mobile-nav-link text-white text-2xl hover:text-amber-400 transition-colors">මුල් පිටුව</a>
+            <a href="#" data-page="about" class="mobile-nav-link text-white text-2xl hover:text-amber-400 transition-colors">අප ගැන</a>
+            <a href="#" data-page="services" class="mobile-nav-link text-white text-2xl hover:text-amber-400 transition-colors">සේවාවන්</a>
+            <a href="#" data-page="contact" class="mobile-nav-link text-white text-2xl hover:text-amber-400 transition-colors">සම්බන්ධ වන්න</a>
+        </div>
+    </div>
+
+    <!-- Header with Navigation -->
+    <header class="fixed w-full top-0 z-40 bg-black bg-opacity-80 backdrop-blur-md text-white shadow-lg">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <div class="text-amber-400 font-bold text-3xl">Dilum</div>
+                    <div class="font-light text-xl">Salon</div>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#" data-page="home" class="navbar-link active hover:text-amber-400 transition-colors">මුල් පිටුව</a>
+                    <a href="#" data-page="about" class="navbar-link hover:text-amber-400 transition-colors">අප ගැන</a>
+                    <a href="#" data-page="services" class="navbar-link hover:text-amber-400 transition-colors">සේවාවන්</a>
+                    <a href="#" data-page="contact" class="navbar-link hover:text-amber-400 transition-colors">සම්බන්ධ වන්න</a>
+                </nav>
+                
+                <!-- Mobile Menu Button -->
+                <button id="menu-button" class="md:hidden text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                    </svg>
+                </button>
+                
+                <!-- Contact Button (Desktop) -->
+                <a href="#" data-page="contact" class="hidden md:block bg-amber-500 hover:bg-amber-600 text-white font-medium px-6 py-2 rounded-full transition-all transform hover:scale-105">
+                    සම්බන්ධ වන්න
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="container mx-auto pt-24 pb-16 px-4">
+        <!-- Home Page -->
+        <div id="home" class="page active space-y-16">
+            <!-- Hero Section -->
+            <section class="relative overflow-hidden rounded-3xl gradient-bg text-white mt-12">
+                <div class="absolute -right-20 -top-20 w-64 h-64 bg-white opacity-10 rounded-full"></div>
+                <div class="absolute -left-20 -bottom-20 w-80 h-80 bg-white opacity-10 rounded-full"></div>
+                
+                <div class="relative z-10 py-20 px-6 md:px-16 flex flex-col md:flex-row items-center">
+                    <div class="w-full md:w-1/2 space-y-6 text-center md:text-left animate-fadeUp">
+                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+                            ඔබේ රූපලාවන්‍ය සිහින මෙහි සැබෑ වේ!
+                        </h1>
+                        <p class="text-lg md:text-xl opacity-90">
+                            අපගේ නිපුණ කාර්ය මණ්ඩලය සමඟ කාලෝචිත, අලුත්ම රූපලාවන්‍ය ප්‍රවණතා අත්විඳින්න
+                        </p>
+                        <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 justify-center md:justify-start pt-4">
+                            <a href="#services-overview" class="bg-white text-amber-500 hover:bg-gray-100 font-semibold px-8 py-3 rounded-full transition-all transform hover:scale-105 shadow-lg">
+                                අපගේ සේවාවන්
+                            </a>
+                            <a href="#" data-page="contact" class="bg-transparent hover:bg-white hover:text-amber-500 border-2 border-white font-semibold px-8 py-3 rounded-full transition-all">
+                                අපව සම්බන්ධ කරගන්න
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="w-full md:w-1/2 flex justify-center mt-12 md:mt-0">
+                        <div class="w-64 h-64 md:w-80 md:h-80 bg-white bg-opacity-20 rounded-full flex items-center justify-center relative animate-fadeUp delay-200">
+                            <div class="absolute inset-0 border-4 border-white border-opacity-20 rounded-full"></div>
+                            <div class="text-4xl font-bold">Dilum</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Features Section -->
+            <section id="features" class="py-12 space-y-12">
+                <div class="text-center space-y-4 max-w-3xl mx-auto">
+                    <h2 class="text-3xl md:text-4xl font-bold">මොකද අපි විශේෂ?</h2>
+                    <p class="text-gray-600 text-lg">Dilum Salon හි අපි විශ්වාස කරන්නේ සෑම පුද්ගලයාම සුවිශේෂී බවයි, ඔබට උපරිම රැකවරණය ලබා දීමට අපි කැපවී සිටිමු.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="bg-white p-8 rounded-2xl shadow-md hover:shadow-xl transition-shadow animate-fadeUp">
+                        <div class="bg-amber-100 text-amber-600 w-16 h-16 flex items-center justify-center rounded-full mb-6">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.182 15.182a4.5 4.5 0 01-6.364 0M21 12a9 9 0 11-18 0 9 9 0 0118 0zM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75zm-.375 0h.008v.015h-.008V9.75zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75zm-.375 0h.008v.015h-.008V9.75z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-4">පළපුරුදු කාර්ය මණ්ඩලය</h3>
+                        <p class="text-gray-600">වසර ගණනාවක අත්දැකීම් සහිත අපගේ නිපුණ රූපලාවන්‍ය ශිල්පීන් ඔබගේ අවශ්‍යතා සපුරාලීමට සූදානම්.</p>
+                    </div>
+                    
+                    <div class="bg-white p-8 rounded-2xl shadow-md hover:shadow-xl transition-shadow animate-fadeUp delay-100">
+                        <div class="bg-amber-100 text-amber-600 w-16 h-16 flex items-center justify-center rounded-full mb-6">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-4">ප්‍රසන්න පරිසරය</h3>
+                        <p class="text-gray-600">ඔබේ සැහැල්ලුව සහ සුවපහසුව සඳහා නිර්මාණය කරන ලද නවීන හා සුපිරිසිදු පරිසරයක රූපලාවන්‍ය සේවා ලබා ගන්න.</p>
+                    </div>
+                    
+                    <div class="bg-white p-8 rounded-2xl shadow-md hover:shadow-xl transition-shadow animate-fadeUp delay-200">
+                        <div class="bg-amber-100 text-amber-600 w-16 h-16 flex items-center justify-center rounded-full mb-6">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-4">දැරිය හැකි මිල ගණන්</h3>
+                        <p class="text-gray-600">අපි විශ්වාස කරනවා සෑම කෙනෙක්ටම ඉහළ ගුණාත්මක රූපලාවන්‍ය සේවා ලබා ගැනීමට හැකි විය යුතුයි කියලා.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Services Overview Section -->
+            <section id="services-overview" class="py-12 space-y-12">
+                <div class="text-center space-y-4 max-w-3xl mx-auto">
+                    <h2 class="text-3xl md:text-4xl font-bold">අපගේ සේවාවන්</h2>
+                    <p class="text-gray-600 text-lg">ඔබේ සම්පූර්ණ රූපලාවන්‍ය අවශ්‍යතා සඳහා අපි ඉහළ ගුණාත්මක සේවා රාශියක් ලබා දෙන්නෙමු.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="service-card bg-white overflow-hidden rounded-xl shadow-md">
+                        <div class="h-48 bg-amber-100"></div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold mb-2">කොණ්ඩා මෝස්තර</h3>
+                            <p class="text-gray-600 mb-4">වර්තමාන ප්‍රවණතා සහ ඔබගේ මුහුණේ හැඩයට ගැලපෙන කොණ්ඩා මෝස්තර.</p>
+                            <a href="#" data-page="services" class="text-amber-500 hover:text-amber-600 font-medium inline-flex items-center">
+                                තව බලන්න
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 ml-1">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="service-card bg-white overflow-hidden rounded-xl shadow-md">
+                        <div class="h-48 bg-amber-100"></div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold mb-2">මුහුණු ප්‍රතිකාර</h3>
+                            <p class="text-gray-600 mb-4">ඔබේ සමේ තත්වය වැඩිදියුණු කිරීමට වෘත්තීයමය මුහුණු ප්‍රතිකාර.</p>
+                            <a href="#" data-page="services" class="text-amber-500 hover:text-amber-600 font-medium inline-flex items-center">
+                                තව බලන්න
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 ml-1">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="service-card bg-white overflow-hidden rounded-xl shadow-md">
+                        <div class="h-48 bg-amber-100"></div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold mb-2">මකප් සේවාවන්</h3>
+                            <p class="text-gray-600 mb-4">විශේෂ අවස්ථා සඳහා වෘත්තීය මේකප් සහ රූපලාවන්‍ය සේවාවන්.</p>
+                            <a href="#" data-page="services" class="text-amber-500 hover:text-amber-600 font-medium inline-flex items-center">
+                                තව බලන්න
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 ml-1">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center pt-6">
+                    <a href="#" data-page="services" class="inline-block bg-amber-500 hover:bg-amber-600 text-white font-medium px-8 py-3 rounded-full transition-all transform hover:scale-105">
+                        සියලු සේවාවන් බලන්න
+                    </a>
+                </div>
+            </section>
+            
+            <!-- Testimonials Section -->
+            <section id="testimonials" class="py-12 space-y-12">
+                <div class="text-center space-y-4 max-w-3xl mx-auto">
+                    <h2 class="text-3xl md:text-4xl font-bold">අපගේ සේවාදායකයින් කියන දේ</h2>
+                    <p class="text-gray-600 text-lg">අපගේ ප්‍රසන්න සේවාදායකයින්ගේ සහතික කිරීම් වලින් කිහිපයක්.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="testimonial-card bg-white p-8 rounded-xl shadow-md">
+                        <div class="flex items-center mb-6">
+                            <div class="w-14 h-14 bg-amber-200 rounded-full flex items-center justify-center text-amber-600 font-bold text-xl">
+                                LL
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="font-semibold">ලක්ෂ්මි ලියනගේ</h4>
+                                <p class="text-gray-500 text-sm">නියමි සේවාවක් පලමු වතාවට</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-700">"මම Dilum Salon වෙත ගියේ මගේ කොණ්ඩා මෝස්තරය මාරු කිරීමට. මම ලබා ගත් සේවාව ගැන ඉතා සතුටු වෙනවා. ස්ටයිලිස්ට් මගේ අදහස් වලට සවන් දී, මගේ මුහුණේ හැඩයට ගැලපෙන කොණ්ඩා මෝස්තරයක් යෝජනා කළා. මම නැවතත් පැමිණෙන්නම්!"</p>
+                    </div>
+                    
+                    <div class="testimonial-card bg-white p-8 rounded-xl shadow-md">
+                        <div class="flex items-center mb-6">
+                            <div class="w-14 h-14 bg-amber-200 rounded-full flex items-center justify-center text-amber-600 font-bold text-xl">
+                                KJ
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="font-semibold">කසුන් ජයවර්ධන</h4>
+                                <p class="text-gray-500 text-sm">සති 2ක් තිස්සේ පාරිභෝගිකයෙක්</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-700">"මගේ මඟුල් දිනය සඳහා Dilum Salon මගේ පළමු තේරීම වුණා. අතිශයින්ම වෘත්තීයමය හා මිත්‍රශීලී කාර්ය මණ්ඩලය ගැන මම ඉතා සතුටු වෙනවා. මේකප් පැය ගණනක් පැවතුනා, මගේ බලාපොරොත්තු ඉක්මවා ගියා. මම ඔවුන් තදින්ම නිර්දේශ කරනවා!"</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+        
+        <!-- About Page -->
+        <div id="about" class="page space-y-16">
+            <!-- About Header -->
+            <section class="py-16 text-center space-y-6">
+                <h1 class="text-4xl md:text-5xl font-bold">අප ගැන</h1>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">Dilum Salon වෙත සාදරයෙන් පිළිගනිමු. අපි ඔබේ සුන්දරත්වය වැඩි දියුණු කිරීමට කැපවී සිටින වෘත්තීය රූපලාවන්‍ය ශිල්පීන්ගේ කණ්ඩායමක්.</p>
+            </section>
+            
+            <!-- Our Story -->
+            <section class="py-12 space-y-12">
+                <div class="flex flex-col md:flex-row gap-12 items-center">
+                    <div class="w-full md:w-1/2">
+                        <div class="aspect-square bg-amber-100 rounded-2xl"></div>
+                    </div>
+                    <div class="w-full md:w-1/2 space-y-6">
+                        <h2 class="text-3xl font-bold">අපගේ කතාව</h2>
+                        <p class="text-gray-700">Dilum Salon 2010 වසරේ දී ආරම්භ කරන ලදී. වසර 15 කට වැඩි කාලයක් තිස්සේ අපි දහස් සංඛ්‍යාත සේවාදායකයින්ට උසස් රූපලාවන්‍ය සේවා ලබා දී ඇත.</p>
+                        <p class="text-gray-700">අපගේ ආරම්භක දිනයේ සිට, අපි වෘත්තීයභාවය, ගුණාත්මකභාවය සහ පාරිභෝගික තෘප්තිය කෙරෙහි අවධානය යොමු කර ඇති අතර, එය අපව මෙම කර්මාන්තයේ ප්‍රමුඛයෙකු බවට පත් කර ඇත.</p>
+                        <p class="text-gray-700">අපගේ කාර්ය මණ්
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-6 h-6" viewBox="0 0 16 16">
+                                <path d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334 0-.14 0-.282-.006-.422A6.685 6.685 0 0 0 16 3.542a6.658 6.658 0 0 1-1.889.518 3.301 3.301 0 0 0 1.447-1.817 6.533 6.533 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.325 9.325 0 0 1-6.767-3.429 3.289 3.289 0 0 0 1.018 4.382A3.323 3.323 0 0 1 .64 6.575v.045a3.288 3.288 0 0 0 2.632 3.218 3.203 3.203 0 0 1-.865.115 3.23 3.23 0 0 1-.614-.057 3.283 3.283 0 0 0 3.067 2.277A6.588 6.588 0 0 1 .78 13.58a6.32 6.32 0 0 1-.78-.045A9.344 9.344 0 0 0 5.026 15z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Contact Form -->
+            <div class="bg-white p-8 rounded-xl shadow-md">
+                <h3 class="text-2xl font-semibold mb-6">අපට පණිවිඩයක් යවන්න</h3>
+                <form class="space-y-6">
+                    <div>
+                        <label for="name" class="block text-gray-700 font-medium mb-2">ඔබේ නම</label>
+                        <input type="text" id="name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition">
+                    </div>
+                    
+                    <div>
+                        <label for="email" class="block text-gray-700 font-medium mb-2">ඊමේල් ලිපිනය</label>
+                        <input type="email" id="email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition">
+                    </div>
+                    
+                    <div>
+                        <label for="phone" class="block text-gray-700 font-medium mb-2">දුරකථන අංකය</label>
+                        <input type="tel" id="phone" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition">
+                    </div>
+                    
+                    <div>
+                        <label for="subject" class="block text-gray-700 font-medium mb-2">විෂය</label>
+                        <select id="subject" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition">
+                            <option value="" selected disabled>තෝරන්න</option>
+                            <option value="appointment">වෙන් කිරීමක් සඳහා</option>
+                            <option value="query">ප්‍රශ්නයක් සඳහා</option>
+                            <option value="feedback">ප්‍රතිපෝෂණය</option>
+                            <option value="other">වෙනත්</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="message" class="block text-gray-700 font-medium mb-2">පණිවිඩය</label>
+                        <textarea id="message" rows="5" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="w-full bg-amber-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-amber-700 transition-colors">
+                        පණිවිඩය යවන්න
+                    </button>
+                </form>
+            </div>
+        </section>
+        
+        <!-- Map -->
+        <section class="py-8">
+            <div class="h-96 w-full rounded-xl overflow-hidden">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.798511757686!2d79.8527554153936!3d6.921668395003807!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae2596b5d5f07e1%3A0x5632e59aad308c0!2s123%20Main%20St%2C%20Colombo%2003%2C%20Sri%20Lanka!5e0!3m2!1sen!2sus!4v1621234567890!5m2!1sen!2sus" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+            </div>
+        </section>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="bg-gray-900 text-white py-12">
+    <div class="container mx-auto px-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
+            <div>
+                <h3 class="text-xl font-bold mb-4">Dilum Salon</h3>
+                <p class="text-gray-400">ඔබේ සුන්දරත්වය අපගේ වෘත්තීය අත්දැකීමයි. අපගේ ප්‍රවීණ කණ්ඩායම ඔබගේ රූපලාවන්‍ය අවශ්‍යතා සඳහා කැපවී සිටී.</p>
+            </div>
+            
+            <div>
+                <h4 class="text-lg font-semibold mb-4">සබැඳි</h4>
+                <ul class="space-y-2">
+                    <li><a href="#" data-page="home" class="text-gray-400 hover:text-amber-500 transition-colors">මුල් පිටුව</a></li>
+                    <li><a href="#" data-page="about" class="text-gray-400 hover:text-amber-500 transition-colors">අපගේ ගැන</a></li>
+                    <li><a href="#" data-page="services" class="text-gray-400 hover:text-amber-500 transition-colors">සේවාවන්</a></li>
+                    <li><a href="#" data-page="contact" class="text-gray-400 hover:text-amber-500 transition-colors">අමතන්න</a></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h4 class="text-lg font-semibold mb-4">සේවාවන්</h4>
+                <ul class="space-y-2">
+                    <li><a href="#" class="text-gray-400 hover:text-amber-500 transition-colors">කොණ්ඩා කැපීම</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-amber-500 transition-colors">කොණ්ඩා පාට කිරීම</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-amber-500 transition-colors">මුහුණු ප්‍රතිකාර</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-amber-500 transition-colors">මේකප් සේවා</a></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h4 class="text-lg font-semibold mb-4">සම්බන්ධ වන්න</h4>
+                <address class="not-italic text-gray-400 space-y-2">
+                    <p>123 Main Street,<br>Colombo 03,<br>Sri Lanka</p>
+                    <p>Phone: +94 11 234 5678</p>
+                    <p>Email: info@dilumsalon.com</p>
+                </address>
+            </div>
+        </div>
+        
+        <div class="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+            <p class="text-gray-400">© 2023 Dilum Salon. සියලුම හිමිකම් ඇවිරිණි.</p>
+            <div class="flex space-x-6 mt-4 md:mt-0">
+                <a href="#" class="text-gray-400 hover:text-amber-500 transition-colors">
+                    <span class="sr-only">Facebook</span>
+                    <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd" />
+                    </svg>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-amber-500 transition-colors">
+                    <span class="sr-only">Instagram</span>
+                    <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clip-rule="evenodd" />
+                    </svg>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-amber-500 transition-colors">
+                    <span class="sr-only">Twitter</span>
+                    <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Simple page navigation
+    document.querySelectorAll('[data-page]').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const page = link.getAttribute('data-page');
+            document.querySelectorAll('.page').forEach(p => {
+                p.style.display = 'none';
+            });
+            document.getElementById(page).style.display = 'block';
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        });
+    });
+    
+    // Show home page by default
+    document.getElementById('home').style.display = 'block';
+</script>
+</body>
+</html>
